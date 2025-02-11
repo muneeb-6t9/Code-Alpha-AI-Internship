@@ -1,6 +1,5 @@
 import streamlit as st  # Web interface
 import spacy  # NLP
-import os
 
 # Ensure the SpaCy model is installed
 model_name = "en_core_web_sm"
@@ -9,7 +8,6 @@ try:
     nlp = spacy.load(model_name)
 except OSError:
     st.warning("Downloading the SpaCy model... Please wait.")
-    os.system(f"python -m spacy download {model_name}")
     nlp = spacy.load(model_name)  # Load again after downloading
 
 # Define FAQs
