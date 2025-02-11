@@ -47,7 +47,6 @@ def main():
         else:
             st.warning("Sorry, I couldn't find an answer. Please try rephrasing.")
 
-    st.write("📌 **Powered by TF-IDF & Streamlit**")
 
 
 if __name__ == "__main__":
