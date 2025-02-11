@@ -1,16 +1,6 @@
-import streamlit as st  # Web interface
-import spacy  # NLP
-from spacy.cli import download
-
-# Ensure the SpaCy model is installed
-model_name = "en_core_web_sm"
-
-try:
-    nlp = spacy.load(model_name)
-except OSError:
-    st.warning("Downloading the SpaCy model... Please wait.")
-    download(model_name)  # Download model if not available
-    nlp = spacy.load(model_name)  # Load again after download
+import streamlit as st
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 # Define FAQs
 faqs = [
@@ -20,40 +10,44 @@ faqs = [
     {"question": "Do you offer discounts?", "answer": "Yes, we offer discounts during special sales or for bulk purchases."},
 ]
 
+# Extract just the FAQ questions for vectorization
+faq_questions = [faq["question"] for faq in faqs]
+
+# TF-IDF Vectorizer (turns text into numerical data)
+vectorizer = TfidfVectorizer()
+faq_vectors = vectorizer.fit_transform(faq_questions)  # Convert FAQ questions to vectors
+
+
 def get_best_match(user_query):
-    """Find the best matching FAQ question using NLP."""
-    user_doc = nlp(user_query)
-    best_match = None
-    best_score = 0
+    """Finds the best matching FAQ question using TF-IDF and cosine similarity."""
+    user_vector = vectorizer.transform([user_query])  # Convert user query to vector
+    similarities = cosine_similarity(user_vector, faq_vectors)[0]  # Compute similarity scores
 
-    for faq in faqs:
-        faq_doc = nlp(faq["question"])
-        similarity = user_doc.similarity(faq_doc)
-        if similarity > best_score:
-            best_score = similarity
-            best_match = faq
+    best_index = similarities.argmax()  # Find highest similarity score
+    best_score = similarities[best_index]
 
-    return best_match, best_score
+    if best_score > 0.5:  # Set a similarity threshold
+        return faqs[best_index], best_score
+    return None, best_score
+
 
 # Streamlit Web App
 def main():
-    st.title("🤖 FAQ Chatbot")
+    st.title("🤖 FAQ Chatbot (Without SpaCy)")
     st.write("Ask me any question about our product or services!")
 
     user_query = st.text_input("🔍 Type your question below:")
 
     if user_query:
-        with st.spinner("Searching for the best answer..."):
-            match, score = get_best_match(user_query)
-
-        if match and score > 0.5:
+        match, score = get_best_match(user_query)
+        if match:
             st.success(f"**Answer:** {match['answer']}")
-            st.write(f"📊 (Confidence Score: {score:.2f})")
+            st.write(f"_(Confidence Score: {score:.2f})_")
         else:
-            st.warning("🚫 Sorry, I couldn't find an answer to your question. Please try rephrasing it.")
+            st.warning("Sorry, I couldn't find an answer. Please try rephrasing.")
 
-    st.markdown("---")
-    st.write("⚡ **Powered by SpaCy & Streamlit.**")
-    
+    st.write("📌 **Powered by TF-IDF & Streamlit**")
+
+
 if __name__ == "__main__":
     main()
