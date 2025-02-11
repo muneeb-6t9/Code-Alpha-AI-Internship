@@ -37,3 +37,19 @@ def get_best_match(user_query):
 
 # Streamlit Web App
 def main():
+    st.title("FAQ Chatbot")
+    st.write("Ask me any question about our product or services!")
+
+    user_query = st.text_input("Type your question below:")
+
+    if user_query:
+        match, score = get_best_match(user_query)
+        if match and score > 0.5:
+            st.success(f"**Answer:** {match['answer']}")
+            st.write(f"(Confidence Score: {score:.2f})")
+        else:
+            st.warning("Sorry, I couldn't find an answer to your question. Please try rephrasing it.")
+
+    st.write("Powered by SpaCy and Streamlit.")
+if __name__ == "__main__":
+    main()
