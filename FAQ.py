@@ -33,7 +33,7 @@ def get_best_match(user_query):
 
 # Streamlit Web App
 def main():
-    st.title("🤖 FAQ Chatbot(Code-Alpha-Internship)")
+    st.title("🤖 FAQ Chatbot </br>(Code-Alpha-Internship)")
     st.write("Ask me any question about our product or services!")
 
     user_query = st.text_input("🔍 Type your question below:")
