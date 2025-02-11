@@ -2,12 +2,15 @@ import streamlit as st  # Web interface
 import spacy  # NLP
 import os
 
-# Ensure SpaCy model is available
+# Ensure the SpaCy model is installed
+model_name = "en_core_web_sm"
+
 try:
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load(model_name)
 except OSError:
-    os.system("python -m spacy download en_core_web_sm")  # Download model if missing
-    nlp = spacy.load("en_core_web_sm")
+    st.warning("Downloading the SpaCy model... Please wait.")
+    os.system(f"python -m spacy download {model_name}")
+    nlp = spacy.load(model_name)  # Load again after downloading
 
 # Define FAQs
 faqs = [
@@ -34,20 +37,3 @@ def get_best_match(user_query):
 
 # Streamlit Web App
 def main():
-    st.title("FAQ Chatbot")
-    st.write("Ask me any question about our product or services!")
-
-    user_query = st.text_input("Type your question below:")
-
-    if user_query:
-        match, score = get_best_match(user_query)
-        if match and score > 0.5:
-            st.success(f"**Answer:** {match['answer']}")
-            st.write(f"(Confidence Score: {score:.2f})")
-        else:
-            st.warning("Sorry, I couldn't find an answer to your question. Please try rephrasing it.")
-
-    st.write("Powered by SpaCy and Streamlit.")
-
-if __name__ == "__main__":
-    main()
