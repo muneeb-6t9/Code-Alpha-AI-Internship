@@ -47,6 +47,8 @@ def main():
         else:
             st.warning("Sorry, I couldn't find an answer. Please try rephrasing.")
 
+    st.write("This is a simple chatbot that only replies only a few questions!")
+
 
 
 if __name__ == "__main__":
