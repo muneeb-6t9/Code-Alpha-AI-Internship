@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # Define FAQs
 faqs = [
     {"question": "What is your product?", "answer": "Our product is an AI-powered chatbot designed to assist users."},
-    {"question": "How do I contact support?", "answer": "You can contact support via email at support@example.com."},
+    {"question": "How do I contact support?", "answer": "You can contact support via email at support.streamlit.com."},
     {"question": "What is the refund policy?", "answer": "We offer a 30-day refund policy for unused products."},
     {"question": "Do you offer discounts?", "answer": "Yes, we offer discounts during special sales or for bulk purchases."},
 ]
